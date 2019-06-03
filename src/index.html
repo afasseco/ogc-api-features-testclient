@@ -104,7 +104,7 @@
       <h2>Examples</h2>
       <ul>
         <li><button onclick='setWFS3url("http://localhost:5000/api")'>Load API doc</button> <a href="http://localhost:5000/api" target="_blank">http://localhost:5000/api (local testing)</a></li>
-        <li><button onclick='setWFS3url("https://demo.pygeoapi.io/pygeoapi/api")'>Load API doc</button> <a href="https://demo.pygeoapi.io/pygeoapi/api" target="_blank">https://demo.pygeoapi.io/pygeoapi/api</a></li>
+        <li><button onclick='setWFS3url("https://demo.pygeoapi.io/master/api")'>Load API doc</button> <a href="https://demo.pygeoapi.io/master/api" target="_blank">https://demo.pygeoapi.io/master/api</a></li>
         <li><button onclick='setWFS3url("https://www.ldproxy.nrw.de/topographie")'>Load API doc</button> <a href="https://www.ldproxy.nrw.de/topographie" target="_blank">https://www.ldproxy.nrw.de/topographie</a></li>
         <li><button onclick='setWFS3url("https://beta-paikkatieto.maanmittauslaitos.fi/geographic-names/wfs3/v1/api")'>Load API doc</button> <a href="https://beta-paikkatieto.maanmittauslaitos.fi/geographic-names/wfs3/v1/api" target="_blank">https://beta-paikkatieto.maanmittauslaitos.fi/geographic-names/wfs3/v1/api</a></li>
         <li><button onclick='setWFS3url("https://geo.weather.gc.ca/geomet-beta/features")'>Load API doc</button> <a href="https://geo.weather.gc.ca/geomet-beta/features" target="_blank">https://geo.weather.gc.ca/geomet-beta/features</a></li>
@@ -147,7 +147,7 @@
       $.getJSON(wfs3url, function(data) {
         logUrl(wfs3url)
         // TODO: process the limit, use the min value of the current default and the value of the API doc
-        
+
         _baseurl = wfs3url.replace("/api", "")
         _collectionsurl = _baseurl + "/collections"
         // get the collections of the WFS 3 API
