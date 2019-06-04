@@ -25,6 +25,12 @@
       font-size: 1.5em;
     }
 
+    .log a, .log a:visited {
+      color: #eeeeee;
+      text-decoration: underline;
+      text-decoration-style: dotted;
+    }
+
     #wfs3url {
       width: 50%;
     }
@@ -147,7 +153,7 @@
     var _limit = 100;
 
     function logUrl(url) {
-      $("#log").prepend(new Date().toUTCString() + " -> " + url + "</br>");
+      $("#log").prepend(new Date().toUTCString() + " -> <a href='"+url+"' target='_blank'>" + url + "</a></br>");
     }
 
     function setWFS3url(wfs3url) {
