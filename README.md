@@ -13,3 +13,6 @@ This client is work in progress and meant for just a basic demo / test to access
 * support Cross-origin resource sharing (CORS-enabled API), (tip: see [https://enable-cors.org/](https://enable-cors.org/) )
 * support GeoJSON as encoding of data
 * OpenAPI description of the service
+
+On https://opengeogroep.github.io/ogc-api-features-testclient/src/:
+* support https for the API: becauase of blocking mixed content in browsers na github.io is running on https, the API also must support https connections
