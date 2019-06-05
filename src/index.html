@@ -3,97 +3,7 @@
 
 <head>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin="" />
-  <style>
-    body {
-      font-family: "proxima-nova", "museo", "Helvtica", Arial, sans-serif;
-    }
-
-    .map {
-      height: 400px;
-      width: 100%;
-      margin-bottom: 2em;
-    }
-
-    .log {
-      height: 200px;
-      width: 100%;
-      overflow-y: auto;
-      border: 1px solid grey;
-      color: #eeeeee;
-      background-color: #222222;
-      font-family: Inconsolata, monospace;
-      font-size: 1.5em;
-    }
-
-    .log a, .log a:visited {
-      color: #eeeeee;
-      text-decoration: underline;
-      text-decoration-style: dotted;
-    }
-
-    #wfs3url {
-      width: 50%;
-    }
-
-    .leaflet-popup-content {
-      max-height: 250px;
-      overflow: auto;
-    }
-
-    .fi {
-      border-spacing: 0px;
-      border: 1px solid #c3c3c3;
-    }
-
-    .fi td,
-    .fi th {
-      padding: 6px;
-      text-transform: lowercase;
-    }
-
-    .fi td:first-letter,
-    .fi th:first-letter {
-      text-transform: capitalize;
-    }
-
-    .fi tr:nth-child(even) {
-      background-color: #f2f2f2;
-    }
-
-    #map,
-    #apiinfo {
-      border: 3px solid #f2f2f2;
-      margin-bottom: 1em;
-    }
-
-    #apiinfo {
-      display: inline-flex;
-      width: 100%;
-      max-height: 250px;
-    }
-
-    #examples {
-      padding-right: 1em;
-    }
-
-    #examples button {
-      font-size: 80%;
-      margin: 0.1em;
-    }
-
-    #collections {
-      border-left: 1px solid #f2f2f2;
-    }
-
-    #examples,
-    #collections {
-      width: 50%;
-      padding-left: 1em;
-      overflow-y: auto;
-    }
-  </style>
-  <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="css/testclient.css" />
   <title>OGC API Features / WFS 3 test client</title>
 </head>
 
@@ -114,7 +24,8 @@
         <ul>
           <li>PyGeoAPI demo <button onclick='setWFS3url("https://demo.pygeoapi.io/master/api")'>Load</button> <a href="https://demo.pygeoapi.io/master/api" target="_blank">View API doc</a></li>
           <li>Geonovum INSPIRE lab demo (no HTTPS support) <button onclick='setWFS3url("http://inspirelab.geonovum.nl/test/wfs3/api")'>Load</button> <a href="http://inspirelab.geonovum.nl/test/wfs3/api" target="_blank">View API doc</a></li>
-          <li>Subset demo BGT Swifterbant (no HTTPS support) <button onclick='setWFS3url("http://52.166.65.213/test/bgt/wfs/3.0/api")'>Load</button> <a href="http://52.166.65.213/test/bgt/wfs/3.0/api" target="_blank">View API doc</a></li>
+          <li>Subset demo BGT Swifterbant (WGS84)<button onclick='setWFS3url("https://geodata.nationaalgeoregister.nl/test/bgt/wfs/3.0/api")'>Load</button> <a href="https://geodata.nationaalgeoregister.nl/test/bgt/wfs/3.0/api" target="_blank">View API doc</a></li>
+          <li>Subset demo BGT Swifterbant (RD, EPSG:28992)<button onclick='setWFS3url("https://geodata.nationaalgeoregister.nl/test/bgt/28992/wfs/3.0/api")'>Load</button> <a href="https://geodata.nationaalgeoregister.nl/test/bgt/28992/wfs/3.0/api" target="_blank">View API doc</a></li>
         </ul>
       </div>
       <div class="intl">
@@ -139,120 +50,14 @@
 
   <div id="map" class="map"></div>
   <div id="log" class="log"></div>
+
+  <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+  <script src="js/testclient.js"></script>
+
   <script>
-    var map = L.map('map').setView([52.1, 5.2], 9);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-
-    var _baseurl = ""
-    var _collectionsurl = wfs3url + "/collections";
-    var _collectionId = "";
-    var _collections = []
-    // TODO: implement limit in requests, use the /api doc for this
-    var _limit = 100;
-
-    function logUrl(url) {
-      $("#log").prepend(new Date().toUTCString() + " -> <a href='"+url+"' target='_blank'>" + url + "</a></br>");
-    }
-
-    function setWFS3url(wfs3url) {
-      $("#wfs3url").val(wfs3url);
-      initWFS3(wfs3url);
-    }
-
-    // init: get the collections of the WFS3 API
-    function initWFS3(wfs3url) {
-      $("#go").prop("disabled", true);
-      if (!wfs3url) wfs3url = $("#wfs3url").val();
-      $("#collections").html("")
-      // Access the API doc and try to process the collections resource
-      $.getJSON(wfs3url, function(data) {
-        logUrl(wfs3url)
-        // TODO: process the limit, use the min value of the current default and the value of the API doc
-
-        _baseurl = wfs3url.replace("/api", "")
-        _collectionsurl = _baseurl + "/collections"
-        // get the collections of the WFS 3 API
-        $.getJSON(_collectionsurl, function(colldata) {
-          logUrl(_collectionsurl)
-          var cnt = 0;
-          for (var c in colldata["collections"]) {
-            var coll = colldata["collections"][c];
-            // get the name as the id
-            var li = "<p id='li_" + coll["name"] + "'>" +
-              "<b>" + (coll["title"] || coll["name"]) + "</b><br/>" + (coll["description"] || "") +
-              "<br/><button onclick='loadDataInExtent(\"" + coll["name"] + "\")'>Load items in current map view</button>&nbsp;<button onclick='addCollection(\"" + coll["name"] + "\")'>Browse items (random)</button></p>";
-            $("#collections").append(li);
-            cnt++;
-          }
-          $("#go").prop("disabled", false);
-          $("#collections").prepend("<h2>" + cnt + " collections found</h2>");
-        });
-      });
-    }
-
-    function loadDataInExtent(collectionId) {
-      // TODO: take into account limit = -1? and/or paging?
-      // assume limit= default of this demo for now
-      _collectionId = collectionId;
-      var reqUrl = _collectionsurl + "/" + collectionId + "/items?limit=" + _limit + "&bbox=";
-      var bnds = map.getBounds();
-      var bboxStr = bnds["_southWest"].lng + "," + bnds["_southWest"].lat + "," + bnds["_northEast"].lng + "," + bnds["_northEast"].lat;
-      loadWFS3Data(reqUrl + bboxStr, collectionId)
-    }
-
-    function nextData(reqUrl, collectionId) {
-      // TODO: remove previous data?
-      loadWFS3Data(reqUrl, collectionId);
-    }
-
-    function addCollection(collectionId) {
-      _collectionId = collectionId;
-      var reqUrl = _collectionsurl + "/" + collectionId + "/items";
-      loadWFS3Data(reqUrl, collectionId);
-    }
-
-    // load GeoJSON encoded data from a URL (in fact: from a WFS 3 collection URL)
-    function loadWFS3Data(reqUrl, collectionId) {
-      // http://localhost:5000/collections/pc5/items/?&limit=100
-      $.getJSON(reqUrl, function(data) {
-        logUrl(reqUrl)
-        var wfs3layer = L.geoJSON(data, {
-          style: function(feature) {
-            // very basic styling..
-            return {
-              color: "#0000bb"
-            };
-          }
-        }).bindPopup(function(layer) {
-          var pp = "<table class='fi'><th colspan='2'>" + collectionId + "</td></th>";
-          for (var p in layer.feature.properties) {
-            pp += "<tr><td>" + p + "</td><td> " + layer.feature.properties[p] + "</td></tr>"
-          }
-          pp += "</table>"
-          return pp;
-        }).addTo(map);
-        // add the next and prev URLs if provided in the geojson response
-        var liId = "li_" + collectionId
-        if ($("#" + liId)) {
-          for (var l in data.links) {
-            var lnk = data.links[l];
-            if (lnk.rel == "next" || lnk.rel == "prev") {
-              var btnId = "btn_" + lnk.rel + "_" + collectionId
-              var ttl = (lnk.title) ? lnk.title : lnk.rel;
-              var btn = "<button id='" + btnId + "' onclick='nextData(\"" + lnk.href + "\", \"" + collectionId + "\")'>" + ttl + "</button>";
-              if ($("#" + btnId).length > 0) {
-                $("#" + btnId).replaceWith(btn)
-              } else {
-                $("#" + liId).append(btn)
-              }
-            }
-          }
-        }
-        map.fitBounds(wfs3layer.getBounds());
-      });
-    }
+    initMap();
   </script>
 
 </body>
