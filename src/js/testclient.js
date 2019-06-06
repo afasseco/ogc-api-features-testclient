@@ -7,6 +7,7 @@ var _collections = []
 // TODO: implement limit in requests, use the /api doc for this
 var _limit = 100;
 var map;
+var bboxCrs;
 
 function initMap(crsAlias) {
   var options = {};
@@ -23,7 +24,7 @@ function initMap(crsAlias) {
     );
     options = {
       crs: RD,
-      center: [155000.0, 463000.0],
+      center: [52.1, 5.2], // in lat long
       zoom: 4,
     }
     baseLayer = new L.tileLayer('https://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png', {
@@ -32,6 +33,7 @@ function initMap(crsAlias) {
         tms: true,
         attribution: 'Map data: <a href="http://www.kadaster.nl">Kadaster</a>'
     });
+    bboxCrs=encodeURIComponent("http://www.opengis.net/def/crs/EPSG/0/28992");
   } else {
     options = {
       center: [52.1, 5.2],
@@ -103,10 +105,19 @@ function loadDataInExtent(collectionId) {
   // TODO: take into account limit = -1? and/or paging?
   // assume limit= default of this demo for now
   _collectionId = collectionId;
-  var reqUrl = _collectionsurl + "/" + collectionId + "/items?limit=" + _limit + "&bbox=";
+  var reqUrl = _collectionsurl + "/" + collectionId + "/items?limit=" + _limit;
   var bnds = map.getBounds();
-  var bboxStr = bnds["_southWest"].lng + "," + bnds["_southWest"].lat + "," + bnds["_northEast"].lng + "," + bnds["_northEast"].lat;
-  loadWFS3Data(reqUrl + bboxStr, collectionId)
+  var ll = [bnds["_southWest"].lng, bnds["_southWest"].lat];
+  var ur = [bnds["_northEast"].lng, bnds["_northEast"].lat];
+  // transform to RD, only RD is supported now
+  if (bboxCrs) {
+    reqUrl += "&bbox-crs=" + bboxCrs + "&crs=" + bboxCrs; // force RD as output?
+    ll = transformToRD(ll);
+    ur = transformToRD(ur);
+  }
+  var bboxStr = ll[0] + "," + ll[1] + "," + ur[0] + "," + ur[1];
+  reqUrl += "&bbox=" + bboxStr;
+  loadWFS3Data(reqUrl, collectionId)
 }
 
 function nextData(reqUrl, collectionId) {
@@ -157,6 +168,17 @@ function loadWFS3Data(reqUrl, collectionId) {
         }
       }
     }
-    map.fitBounds(wfs3layer.getBounds());
+    // for RD: back to WGS 84
+    var newBnds = wfs3layer.getBounds();
+    // TODO: transform back for BGT?
+    if (bboxCrs) {
+      var ll = [newBnds["_southWest"].lng, newBnds["_southWest"].lat];
+      var ur = [newBnds["_northEast"].lng, newBnds["_northEast"].lat];
+      // transform to RD, only RD is supported now
+      ll = transformToWGS84(ll);
+      ur = transformToWGS84(ur);
+      newBnds = [ll, ur];
+    }
+    map.fitBounds(newBnds);
   });
 }
