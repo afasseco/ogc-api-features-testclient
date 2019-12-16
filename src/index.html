@@ -12,7 +12,7 @@
   <div>
     <p>This client is very basic and work in progress. The goal is to demonstrate the usage of OGC API Feature implementations ("WFS 3") and to test different implementations of that API specification. Enter an OpenAPI document URL to see what data is offered
       by the API. The logging screen below the map shows which HTTP requests are sent.</p>
-    <p><label for="wfs3url">API doc URL: <input type="text" id="wfs3url" value="https://demo.pygeoapi.io/master/api" onchange="initWFS3(this.value)" autocomplete="off" /> </label>
+    <p><label for="wfs3url">API doc URL: <input type="text" id="wfs3url" value="https://demo.pygeoapi.io/master/openapi" onchange="initWFS3(this.value)" autocomplete="off" /> </label>
       <button onclick="initWFS3()" id="go">Go</button>
     </p>
   </div>
@@ -22,7 +22,7 @@
       <div class="NL">
         <h3>Offering Dutch data</h3>
         <ul>
-          <li>PyGeoAPI demo <button onclick='setWFS3url("https://demo.pygeoapi.io/master/api")'>Load</button> <a href="https://demo.pygeoapi.io/master/api" target="_blank">View API doc</a></li>
+          <li>PyGeoAPI demo <button onclick='setWFS3url("https://demo.pygeoapi.io/master/openapi")'>Load</button> <a href="https://demo.pygeoapi.io/master/openapi" target="_blank">View API doc</a></li>
           <li>Geonovum INSPIRE lab demo (no HTTPS support) <button onclick='setWFS3url("http://inspirelab.geonovum.nl/test/wfs3/api")'>Load</button> <a href="http://inspirelab.geonovum.nl/test/wfs3/api" target="_blank">View API doc</a></li>
           <li>Subset demo BGT Swifterbant (WGS84)<button onclick='setWFS3url("https://geodata.nationaalgeoregister.nl/test/bgt/wfs/3.0/api")'>Load</button> <a href="https://geodata.nationaalgeoregister.nl/test/bgt/wfs/3.0/api" target="_blank">View API doc</a></li>
           <li>Subset demo BGT Swifterbant (RD, EPSG:28992)<button onclick='setWFS3url("https://geodata.nationaalgeoregister.nl/test/bgt/28992/wfs/3.0/api")'>Load</button> <a href="https://geodata.nationaalgeoregister.nl/test/bgt/28992/wfs/3.0/api" target="_blank">View API doc</a></li>
