@@ -81,7 +81,10 @@ function initWFS3(wfs3url) {
       logTxt("No other CRSes offered, default WGS84", "debug")
     }
     _baseurl = wfs3url.replace("/api", "")
+    _baseurl = wfs3url.replace("/openapi", "")
     _collectionsurl = _baseurl + "/collections"
+    // TODO: get the _collectionsurl from the openapi document
+    
     // get the collections of the WFS 3 API
     $.getJSON(_collectionsurl, function(colldata) {
       logUrl(_collectionsurl)
