@@ -4,10 +4,9 @@ var _baseurl = ""
 var _collectionsurl = wfs3url + "/collections";
 var _collectionId = "";
 var _collections = []
-// TODO: implement limit in requests, use the /api doc for this
-var _limit = 100;
 var map;
 var bboxCrs;
+var wfs3layers = [];
 
 function initMap(crsAlias) {
   var options = {};
@@ -81,7 +80,7 @@ function initWFS3(wfs3url) {
       logTxt("No other CRSes offered, default WGS84", "debug")
     }
     _baseurl = wfs3url.replace("/api", "")
-    _baseurl = wfs3url.replace("/openapi", "")
+    _baseurl = _baseurl.replace("/openapi", "")
     _collectionsurl = _baseurl + "/collections"
     // TODO: get the _collectionsurl from the openapi document
     
@@ -108,7 +107,7 @@ function loadDataInExtent(collectionId) {
   // TODO: take into account limit = -1? and/or paging?
   // assume limit= default of this demo for now
   _collectionId = collectionId;
-  var reqUrl = _collectionsurl + "/" + collectionId + "/items?limit=" + _limit;
+  var reqUrl = _collectionsurl + "/" + collectionId + "/items?limit=" + $("#limit")[0].value;
   var bnds = map.getBounds();
   var ll = [bnds["_southWest"].lng, bnds["_southWest"].lat];
   var ur = [bnds["_northEast"].lng, bnds["_northEast"].lat];
@@ -120,6 +119,20 @@ function loadDataInExtent(collectionId) {
   }
   var bboxStr = ll[0] + "," + ll[1] + "," + ur[0] + "," + ur[1];
   reqUrl += "&bbox=" + bboxStr;
+
+  var from = $("#from")[0].value;
+  var to = $("#to")[0].value;
+
+  var delim = "&"
+  if( from ) {
+    var append = "from="+new Date(from).valueOf()+"000";
+    reqUrl = reqUrl + delim + append;
+  }
+  if( to ) {
+    var append = "to="+new Date(to).valueOf()+"000";
+    reqUrl = reqUrl + delim + append;
+  }
+
   loadWFS3Data(reqUrl, collectionId)
 }
 
@@ -154,6 +167,7 @@ function loadWFS3Data(reqUrl, collectionId) {
       pp += "</table>"
       return pp;
     }).addTo(map);
+    wfs3layers.push(wfs3layer);
     // add the next and prev URLs if provided in the geojson response
     var liId = "li_" + collectionId
     if ($("#" + liId)) {
@@ -182,6 +196,14 @@ function loadWFS3Data(reqUrl, collectionId) {
       ur = transformToWGS84(ur);
       newBnds = [ll, ur];
     }
-    map.fitBounds(newBnds);
+    //map.fitBounds(newBnds);
   });
+}
+
+function clearlayers() {
+    var layer;
+    while (layer = wfs3layers.pop())
+    {
+      map.removeLayer(layer);
+    }
 }

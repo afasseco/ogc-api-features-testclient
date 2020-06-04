@@ -2,7 +2,9 @@
 <html lang="en">
 
 <head>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin="" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin=""/>
   <link rel="stylesheet" href="css/testclient.css" />
   <title>OGC API Features / WFS 3 test client</title>
 </head>
@@ -14,6 +16,10 @@
       by the API. The logging screen below the map shows which HTTP requests are sent.</p>
     <p><label for="wfs3url">API doc URL: <input type="text" id="wfs3url" value="https://demo.pygeoapi.io/master/openapi" onchange="initWFS3(this.value)" autocomplete="off" /> </label>
       <button onclick="initWFS3()" id="go">Go</button>
+      <button onclick="clearlayers()" id="clear">Clear</button>
+      <input value="2020-05-01 11:00:00" size="30" id="from"/>
+      <input value="2020-05-30 23:00:00" size="30" id="to"/>
+      <input value="100" size="4" id="limit"/>
     </p>
   </div>
   <div id="apiinfo">
@@ -51,7 +57,9 @@
   <div id="map" class="map"></div>
   <div id="log" class="log"></div>
 
-  <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+          integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+          crossorigin=""></script>
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
   <script src="js/testclient.js"></script>
