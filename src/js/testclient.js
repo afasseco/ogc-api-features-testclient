@@ -124,21 +124,23 @@ function loadDataInExtent(collectionId) {
   var to = $("#to")[0].value;
 
   var delim = "&"
-  var append="datetime=";
-  if( from ) {
-    append = append + new Date(from).toISOString();
-  } else {
-    append = append + "..";
-  }
+  if( from || to) {
+      var append="datetime=";
+      if( from ) {
+        append = append + new Date(from).toISOString();
+      } else {
+        append = append + "..";
+      }
 
-  append = append + "/";
+      append = append + "/";
 
-  if( to ) {
-    append = append + new Date(to).toISOString();
-  } else {
-    append = append + "..";
+      if( to ) {
+        append = append + new Date(to).toISOString();
+      } else {
+        append = append + "..";
+      }
+      reqUrl = reqUrl + delim + append;
   }
-  reqUrl = reqUrl + delim + append;
 
   loadWFS3Data(reqUrl, collectionId)
 }
