@@ -17,9 +17,10 @@
     <p><label for="wfs3url">API doc URL: <input type="text" id="wfs3url" value="https://demo.pygeoapi.io/master/openapi" onchange="initWFS3(this.value)" autocomplete="off" /> </label>
       <button onclick="initWFS3()" id="go">Go</button>
       <button onclick="clearlayers()" id="clear">Clear</button>
-      <input value="2020-05-01 11:00:00" size="30" id="from"/>
-      <input value="2020-05-30 23:00:00" size="30" id="to"/>
+      <input value="2020-05-01 11:00:00" size="20" id="from"/>
+      <input value="2020-05-30 23:00:00" size="20" id="to"/>
       <input value="100" size="4" id="limit"/>
+      <input value="apikey" size="30" id="apikey"/>
     </p>
   </div>
   <div id="apiinfo">

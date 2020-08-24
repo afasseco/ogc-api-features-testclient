@@ -142,6 +142,11 @@ function loadDataInExtent(collectionId) {
       reqUrl = reqUrl + delim + append;
   }
 
+  var apikey = $("#apikey")[0].value;
+  if( apikey ) {
+    reqUrl = reqUrl + delim + "api-key=" + apikey;
+  }
+
   loadWFS3Data(reqUrl, collectionId)
 }
 
